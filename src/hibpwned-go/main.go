@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/sha1"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -12,8 +13,23 @@ const (
 	domain = "https://api.pwnedpasswords.com/"
 )
 
+var (
+	p string
+)
+
+func init() {
+	flag.StringVar(&p, "p", "", "Password to check")
+}
+
 func main() {
-	hash := sha1.Sum([]byte("P@ssw0rd"))
+	flag.Parse()
+
+	if p == "" {
+		flag.PrintDefaults()
+		return
+	}
+
+	hash := sha1.Sum([]byte(p))
 	hashString := strings.ToUpper(fmt.Sprintf("%x", hash))
 
 	res, err := http.Get(domain + "range/" + hashString[:5])
