@@ -31,14 +31,14 @@ func main() {
 
 	hash := sha1.Sum([]byte(p))
 	hashString := strings.ToUpper(fmt.Sprintf("%x", hash))
-
 	res, err := http.Get(domain + "range/" + hashString[:5])
-	defer res.Body.Close()
 
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
+	defer res.Body.Close()
 
 	data, err := ioutil.ReadAll(res.Body)
 
