@@ -36,7 +36,13 @@ func main() {
 			return
 		}
 
-		pass = string(p)
+		pass = strings.TrimSpace(string(p))
+
+		if pass == "" {
+			fmt.Println("\nCan't check an empty password")
+			return
+		}
+
 		println()
 	}
 
