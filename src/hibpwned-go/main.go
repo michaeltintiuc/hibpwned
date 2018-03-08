@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
+
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 const (
@@ -14,22 +17,30 @@ const (
 )
 
 var (
-	p string
+	pass string
 )
 
 func init() {
-	flag.StringVar(&p, "p", "", "Password to check")
+	flag.StringVar(&pass, "p", "", "Password to check")
 }
 
 func main() {
 	flag.Parse()
 
-	if p == "" {
-		flag.PrintDefaults()
-		return
+	if pass == "" {
+		fmt.Print("Input password (hidden): ")
+		p, err := terminal.ReadPassword(int(os.Stdin.Fd()))
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		pass = string(p)
+		println()
 	}
 
-	hash := sha1.Sum([]byte(p))
+	hash := sha1.Sum([]byte(pass))
 	hashString := strings.ToUpper(fmt.Sprintf("%x", hash))
 	res, err := http.Get(domain + "range/" + hashString[:5])
 
