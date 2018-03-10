@@ -46,11 +46,7 @@ func (p *Pwd) Search() error {
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
-		return err
-	}
-
-	return nil
+	return scanner.Err()
 }
 
 // FetchPwned sends a request to the HIBPwned API
