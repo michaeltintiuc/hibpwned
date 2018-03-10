@@ -1,33 +1,29 @@
 package pwd
 
 import (
+	"crypto/sha1"
 	"fmt"
 	"strings"
 )
 
-// CheckPlain verifies if plain-text password was compromised
-// and how many times
-func CheckPlain(pass string) (bool, int, error) {
-	p := Pwd{pass, "", false, 0}
-
-	if err := p.ValidatePlain(); err != nil {
-		return false, 0, err
-	}
-
-	p.Hash()
-
-	if err := p.Search(); err != nil {
-		return false, 0, err
-	}
-
-	return p.pwned, p.count, nil
+// Plain represents a plain-text password
+// extending the pwd.Hash struct
+type Plain struct {
+	Hash
+	Plain string
 }
 
-// ValidatePlain checks the provided password
-func (p *Pwd) ValidatePlain() error {
-	p.plain = strings.TrimSpace(p.plain)
-	if p.plain == "" {
+// ValidatePlain checks the provided plain-text password
+func (p *Plain) ValidatePlain() error {
+	p.Plain = strings.TrimSpace(p.Plain)
+	if p.Plain == "" {
 		return fmt.Errorf("Provided password is empty")
 	}
 	return nil
+}
+
+// SHA1 creates a SHA-1 hash of the provided plain-text password
+func (p *Plain) SHA1() {
+	hash := sha1.Sum([]byte(p.Plain))
+	p.Hashed = strings.ToUpper(fmt.Sprintf("%x", hash))
 }

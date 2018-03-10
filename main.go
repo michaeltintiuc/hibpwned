@@ -20,49 +20,44 @@ func init() {
 
 func main() {
 	flag.Parse()
-	checkPlain()
-	checkHash()
+
+	if pass != "" {
+		checkPlain()
+	}
+
+	if hash != "" {
+		checkHash()
+	}
 }
 
 func checkPlain() {
-	if pass == "" {
-		return
-	}
-
 	fmt.Println("Checking plain-text password")
 
-	pwned, count, err := pwd.CheckPlain(pass)
-
+	p, err := pwd.CheckPlain(pass)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if pwned {
-		fmt.Printf("Your password was pwned %d times\n", count)
+	if p.Pwned {
+		fmt.Printf("Your password was pwned %d times\n", p.Count)
 		return
 	}
-
 	fmt.Println("You are secure, for now...")
 }
 
 func checkHash() {
-	if hash == "" {
-		return
-	}
-
 	fmt.Println("Checking SHA-1 password hash")
-	pwned, count, err := pwd.CheckHash(hash)
 
+	p, err := pwd.CheckHash(hash)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if pwned {
-		fmt.Printf("Your password was pwned %d times\n", count)
+	if p.Pwned {
+		fmt.Printf("Your password was pwned %d times\n", p.Count)
 		return
 	}
-
 	fmt.Println("You are secure, for now...")
 }

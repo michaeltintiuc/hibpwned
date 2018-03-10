@@ -1,36 +1,59 @@
 package pwd
 
 import (
-	"crypto/sha1"
+	"bufio"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
-// CheckHash verifies if SHA-1 hash of a password was compromised
-// and how many times
-func CheckHash(hash string) (bool, int, error) {
-	p := Pwd{"", hash, false, 0}
+// Hash represents a SHA-1 hash of a password
+type Hash struct {
+	Hashed string
+	Pwned  bool
+	Count  int
+}
 
-	if err := p.Search(); err != nil {
-		return false, 0, err
+// Search if the first 5 characters of the SHA-1 hash
+// are found in the list of comporomised passwords
+func (p *Hash) Search() error {
+	if err := p.ValidateHash(); err != nil {
+		return err
 	}
 
-	return p.pwned, p.count, nil
+	pwned, err := FetchPwned(p.Hashed[:5])
+	if err != nil {
+		return err
+	}
+	defer pwned.Close()
+
+	scanner := bufio.NewScanner(pwned)
+	hashPart := p.Hashed[5:]
+
+	for scanner.Scan() {
+		if row := scanner.Text(); strings.Contains(row, hashPart) {
+			p.Pwned = true
+
+			count, err := strconv.ParseFloat(strings.Split(row, ":")[1], 10)
+			if err != nil {
+				return err
+			}
+
+			p.Count = int(count)
+			break
+		}
+	}
+
+	return scanner.Err()
 }
 
-// Hash creates a SHA-1 hash of the password
-func (p *Pwd) Hash() {
-	hash := sha1.Sum([]byte(p.plain))
-	p.hash = strings.ToUpper(fmt.Sprintf("%x", hash))
-}
-
-// ValidateHash checks if the provided value is a valid SHA-1 hash
-func (p *Pwd) ValidateHash() error {
+// ValidateHash is a proper SHA-1 hash
+func (p *Hash) ValidateHash() error {
 	re := regexp.MustCompile("^[a-fA-F0-9]{40}$")
-	if re.MatchString(p.hash) {
-		p.hash = strings.ToUpper(p.hash)
+	if re.MatchString(p.Hashed) {
+		p.Hashed = strings.ToUpper(p.Hashed)
 		return nil
 	}
-	return fmt.Errorf("'%s' is not a valid SHA-1 hash", p.hash)
+	return fmt.Errorf("'%s' is not a valid SHA-1 hash", p.Hashed)
 }
