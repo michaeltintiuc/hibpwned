@@ -10,17 +10,18 @@ This is a work in progress
 
 ## Usage
 
-Passing a password as an argument
+Passing a plain-text password as an argument
 
 ```
 > hibpwned -p qwerty
-You've been PWNED!
+Checking plain-text password
+Your password was pwned 3599486 times
 ```
 
-Manually enetering the password
+Passing a SHA-1 hash as an argument
 
 ```
-> hibpwned
-Input password (hidden):
-You're secure, for now...
+> hibpwned -h B1B3773A05C0ED0176787A4F1574FF0075F7521E
+Checking SHA-1 password hash
+Your password was pwned 3599486 times
 ```
