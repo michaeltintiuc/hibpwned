@@ -25,3 +25,11 @@ Passing a SHA-1 hash as an argument
 Checking SHA-1 password hash
 Your password was pwned 3599486 times
 ```
+
+Nerding out with same as above
+
+```
+> hibpwned -h $(sha1sum<<(printf "%s" "qwerty"))
+Checking SHA-1 password hash
+Your password was pwned 3599486 times
+```
