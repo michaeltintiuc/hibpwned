@@ -3,6 +3,8 @@ package pwd
 import (
 	"bufio"
 	"fmt"
+	"io"
+	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
@@ -15,14 +17,13 @@ type Hash struct {
 	Count  int
 }
 
-// Search if the first 5 characters of the SHA-1 hash
-// are found in the list of comporomised passwords
+// Search the SHA-1 hash in in the list of compromised passwords
 func (p *Hash) Search() error {
 	if err := p.ValidateHash(); err != nil {
 		return err
 	}
 
-	pwned, err := FetchPwned(p.Hashed[:5])
+	pwned, err := p.FetchPwned()
 	if err != nil {
 		return err
 	}
@@ -48,7 +49,7 @@ func (p *Hash) Search() error {
 	return scanner.Err()
 }
 
-// ValidateHash is a proper SHA-1 hash
+// ValidateHash as a proper SHA-1 hash
 func (p *Hash) ValidateHash() error {
 	re := regexp.MustCompile("^[a-fA-F0-9]{40}$")
 	if re.MatchString(p.Hashed) {
@@ -56,4 +57,11 @@ func (p *Hash) ValidateHash() error {
 		return nil
 	}
 	return fmt.Errorf("'%s' is not a valid SHA-1 hash", p.Hashed)
+}
+
+// FetchPwned passwords from the HIBPwned API
+// using the first 5 characters of the SHA-1 hash
+func (p Hash) FetchPwned() (io.ReadCloser, error) {
+	res, err := http.Get("https://api.pwnedpasswords.com/range/" + p.Hashed[:5])
+	return res.Body, err
 }

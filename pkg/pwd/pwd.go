@@ -1,10 +1,5 @@
 package pwd
 
-import (
-	"io"
-	"net/http"
-)
-
 // Pwd is an interface representing the ability to search compromised passwords
 type Pwd interface {
 	Search() error
@@ -28,10 +23,4 @@ func CheckPlain(pass string) (Plain, error) {
 func CheckHash(hash string) (Hash, error) {
 	p := Hash{hash, false, 0}
 	return p, p.Search()
-}
-
-// FetchPwned passwords from the HIBPwned API
-func FetchPwned(hash string) (io.ReadCloser, error) {
-	res, err := http.Get("https://api.pwnedpasswords.com/range/" + hash)
-	return res.Body, err
 }
