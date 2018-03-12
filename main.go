@@ -20,20 +20,25 @@ func init() {
 
 func main() {
 	flag.Parse()
-
-	if pass != "" {
-		checkPlain()
+	checks := [2]struct {
+		text  string
+		value string
+		fn    func(value string) (*pwd.Hash, error)
+	}{
+		{"Checking plain-text password", pass, pwd.CheckPlain},
+		{"Checking SHA-1 password hash", hash, pwd.CheckHash},
 	}
 
-	if hash != "" {
-		checkHash()
+	for _, c := range checks {
+		if c.value == "" {
+			continue
+		}
+		fmt.Println(c.text)
+		validate(c.fn(c.value))
 	}
 }
 
-func checkPlain() {
-	fmt.Println("Checking plain-text password")
-
-	p, err := pwd.CheckPlain(pass)
+func validate(p *pwd.Hash, err error) {
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -43,21 +48,6 @@ func checkPlain() {
 		fmt.Printf("Your password was pwned %d times\n", p.Count)
 		return
 	}
-	fmt.Println("You are secure, for now...")
-}
 
-func checkHash() {
-	fmt.Println("Checking SHA-1 password hash")
-
-	p, err := pwd.CheckHash(hash)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	if p.Pwned {
-		fmt.Printf("Your password was pwned %d times\n", p.Count)
-		return
-	}
 	fmt.Println("You are secure, for now...")
 }

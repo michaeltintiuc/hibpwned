@@ -7,16 +7,16 @@ type Pwd interface {
 }
 
 // CheckPlain verifies if a plain-text password was compromised and how many times
-func CheckPlain(pass string) (*Plain, error) {
+func CheckPlain(pass string) (*Hash, error) {
 	p := NewPlain(pass)
 
 	if err := p.ValidatePlain(); err != nil {
-		return p, err
+		return &p.Hash, err
 	}
 
 	p.SHA1()
 
-	return p, p.Search()
+	return &p.Hash, p.Search()
 }
 
 // CheckHash verifies if SHA-1 hash of a password was compromised and how many times
