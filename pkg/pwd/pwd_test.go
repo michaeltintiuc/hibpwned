@@ -2,49 +2,27 @@ package pwd
 
 import "testing"
 
-func Test_CheckPlain(t *testing.T) {
-	pwds := [3]struct {
-		plainPass    string
+func Test_Pwd(t *testing.T) {
+	pwds := [5]struct {
+		value        string
 		expectingErr bool
+		fn           func(value string) (*Hash, error)
 	}{
-		{"qwerty", false},
-		{"пароль", false},
-		{"", true},
+		{"qwerty", false, CheckPlain},
+		{"пароль", false, CheckPlain},
+		{"", true, CheckPlain},
+		{"B1B3773A05C0ED0176787A4F1574FF0075F7521E", false, CheckHash},
+		{"", true, CheckHash},
 	}
 
 	for _, pwd := range pwds {
-		_, err := CheckPlain(pwd.plainPass)
+		_, err := pwd.fn(pwd.value)
 
 		if pwd.expectingErr {
 			if err == nil {
 				t.Error("Expected an error")
 			}
-			return
-		}
-
-		if err != nil {
-			t.Error(err)
-		}
-	}
-}
-
-func Test_CheckHash(t *testing.T) {
-	pwds := [2]struct {
-		hash         string
-		expectingErr bool
-	}{
-		{"B1B3773A05C0ED0176787A4F1574FF0075F7521E", false},
-		{"", true},
-	}
-
-	for _, pwd := range pwds {
-		_, err := CheckHash(pwd.hash)
-
-		if pwd.expectingErr {
-			if err == nil {
-				t.Error("Expected an error")
-			}
-			return
+			continue
 		}
 
 		if err != nil {
