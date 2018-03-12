@@ -24,10 +24,6 @@ func NewHash(hash string) *Hash {
 
 // Search the SHA-1 hash in in the list of compromised passwords
 func (p *Hash) Search() error {
-	if err := p.ValidateHash(); err != nil {
-		return err
-	}
-
 	pwned, err := p.FetchPwned()
 	if err != nil {
 		return err
@@ -67,6 +63,9 @@ func (p *Hash) ValidateHash() error {
 // FetchPwned passwords from the HIBPwned API
 // using the first 5 characters of the SHA-1 hash
 func (p Hash) FetchPwned() (io.ReadCloser, error) {
+	if err := p.ValidateHash(); err != nil {
+		return nil, err
+	}
 	res, err := http.Get("https://api.pwnedpasswords.com/range/" + p.Hashed[:5])
 	return res.Body, err
 }
