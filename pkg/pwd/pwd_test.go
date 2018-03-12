@@ -35,10 +35,10 @@ func Test_ScanRow(t *testing.T) {
 	h := NewHash("B1B3773A05C0ED0176787A4F1574FF0075F7521E")
 
 	if err := h.ScanRow("hash"); err == nil {
-		t.Errorf("Expected malformed data")
+		t.Error("Expected malformed data")
 	}
 
 	if err := h.ScanRow("hash:"); err == nil {
-		t.Errorf("Expected malformed data")
+		t.Error("Expected malformed data")
 	}
 }

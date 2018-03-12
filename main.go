@@ -30,11 +30,10 @@ func main() {
 	}
 
 	for _, c := range checks {
-		if c.value == "" {
-			continue
+		if c.value != "" {
+			fmt.Println(c.text)
+			validate(c.fn(c.value))
 		}
-		fmt.Println(c.text)
-		validate(c.fn(c.value))
 	}
 }
 
