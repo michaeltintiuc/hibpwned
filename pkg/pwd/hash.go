@@ -35,19 +35,30 @@ func (p *Hash) Search() error {
 
 	for scanner.Scan() {
 		if row := scanner.Text(); strings.Contains(row, hashPart) {
-			p.Pwned = true
-
-			count, err := strconv.ParseFloat(strings.Split(row, ":")[1], 10)
-			if err != nil {
-				return err
-			}
-
-			p.Count = int(count)
+			p.ScanRow(row)
 			break
 		}
 	}
 
 	return scanner.Err()
+}
+
+// ScanRow for password data in the format of "hash:count"
+func (p *Hash) ScanRow(row string) error {
+	slice := strings.Split(row, ":")
+	if len(slice) <= 1 {
+		return fmt.Errorf("Malformed password data")
+	}
+
+	count, err := strconv.ParseFloat(slice[1], 10)
+	if err != nil {
+		return err
+	}
+
+	p.Pwned = true
+	p.Count = int(count)
+
+	return nil
 }
 
 // ValidateHash as a proper SHA-1 hash

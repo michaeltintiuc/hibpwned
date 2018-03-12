@@ -3,11 +3,12 @@ package pwd
 import "testing"
 
 func Test_CheckPlain(t *testing.T) {
-	pwds := [2]struct {
+	pwds := [3]struct {
 		plainPass    string
 		expectingErr bool
 	}{
 		{"qwerty", false},
+		{"пароль", false},
 		{"", true},
 	}
 
@@ -49,5 +50,17 @@ func Test_CheckHash(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+	}
+}
+
+func Test_ScanRow(t *testing.T) {
+	h := NewHash("B1B3773A05C0ED0176787A4F1574FF0075F7521E")
+
+	if err := h.ScanRow("hash"); err == nil {
+		t.Errorf("Expected malformed data")
+	}
+
+	if err := h.ScanRow("hash:"); err == nil {
+		t.Errorf("Expected malformed data")
 	}
 }
