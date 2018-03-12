@@ -13,6 +13,11 @@ type Plain struct {
 	Plain string
 }
 
+// NewPlain creates a Plain instance
+func NewPlain(pass string) *Plain {
+	return &Plain{*NewHash(""), pass}
+}
+
 // ValidatePlain checks the provided plain-text password
 func (p *Plain) ValidatePlain() error {
 	p.Plain = strings.TrimSpace(p.Plain)

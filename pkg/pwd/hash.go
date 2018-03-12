@@ -17,6 +17,11 @@ type Hash struct {
 	Count  int
 }
 
+// NewHash creates a Hash instance
+func NewHash(hash string) *Hash {
+	return &Hash{hash, false, 0}
+}
+
 // Search the SHA-1 hash in in the list of compromised passwords
 func (p *Hash) Search() error {
 	if err := p.ValidateHash(); err != nil {
