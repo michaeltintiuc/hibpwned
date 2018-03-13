@@ -3,17 +3,8 @@ package pwd
 import (
 	"crypto/sha1"
 	"fmt"
-	"io"
 	"strings"
 )
-
-// Pwd is an interface representing the ability to search compromised passwords
-type Pwd interface {
-	Search() error
-	ScanRow(row string) error
-	ValidateHash() error
-	FetchPwned() (io.ReadCloser, error)
-}
 
 // CheckPlain verifies if a plain-text password was compromised and how many times
 func CheckPlain(pass string) (*Hash, error) {
