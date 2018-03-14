@@ -10,15 +10,21 @@ import (
 )
 
 var (
-	pass  string
-	hash  string
-	email string
+	pass       string
+	hash       string
+	email      string
+	domain     string
+	truncated  bool
+	unverified bool
 )
 
 func init() {
 	flag.StringVar(&pass, "p", "", "Password to check")
 	flag.StringVar(&hash, "h", "", "SHA-1 hash to check")
 	flag.StringVar(&email, "e", "", "Email to check")
+	flag.StringVar(&domain, "d", "", "Domain to check email against")
+	flag.BoolVar(&truncated, "t", false, "Display less detailed email breach info")
+	flag.BoolVar(&unverified, "u", false, "Include unverified email breaches")
 }
 
 func main() {
@@ -32,7 +38,7 @@ func checkAccount() {
 		return
 	}
 
-	data, err := account.Check(email)
+	data, err := account.Check(email, domain, truncated, unverified)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
