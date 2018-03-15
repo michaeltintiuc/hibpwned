@@ -3,7 +3,10 @@ package account
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/michaeltintiuc/hibpwned/pkg/breach"
 )
@@ -39,14 +42,41 @@ func (a Account) BuildURL() string {
 	return fmt.Sprintf("%s?%s", url, strings.Join(params, "&"))
 }
 
+// FetchBreached account info
+func (a Account) FetchBreached() (*http.Response, error) {
+	if a.email == "" {
+		return nil, fmt.Errorf("Cannot fetch empty account breaches")
+	}
+	return breach.Get(a.BuildURL())
+}
+
+// RetryRequest after a timeout response
+func (a Account) RetryRequest(header string) (*http.Response, error) {
+	delay, err := strconv.ParseFloat(header, 10)
+	if err != nil {
+		return nil, err
+	}
+
+	time.Sleep(time.Duration(delay+1) * time.Second)
+	return a.FetchBreached()
+}
+
 // Check if said account was breached
 func Check(email, domain string, truncated, unverified bool) ([]byte, error) {
 	a := NewAccount(email, domain, truncated, unverified)
-	res, err := breach.Get(a.BuildURL())
+	breached, err := a.FetchBreached()
 	if err != nil {
 		return []byte{}, err
 	}
 
-	defer res.Body.Close()
-	return ioutil.ReadAll(res.Body)
+	retry, err := breach.VerifyResponse(breached.StatusCode)
+	if err != nil {
+		return []byte{}, err
+	}
+	if retry {
+		breached, _ = a.RetryRequest(breached.Header.Get("Retry-After"))
+	}
+
+	defer breached.Body.Close()
+	return ioutil.ReadAll(breached.Body)
 }

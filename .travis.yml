@@ -9,6 +9,7 @@ before_install:
 
 script:
   - go test ./pkg/pwd -race -coverprofile=coverage.txt -covermode=atomic
+  - go test ./pkg/breach/account -race -coverprofile=coverage.txt -covermode=atomic
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

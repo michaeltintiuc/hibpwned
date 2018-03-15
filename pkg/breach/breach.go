@@ -1,6 +1,7 @@
 package breach
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -21,4 +22,16 @@ func Get(endpoint string) (*http.Response, error) {
 
 	req.Header.Set("User-Agent", "HIBPwned-Golang")
 	return c.Do(req)
+}
+
+// VerifyResponse status code
+func VerifyResponse(status int) (bool, error) {
+	switch status {
+	case 429:
+		return true, nil
+	case 200:
+		return false, nil
+	default:
+		return false, fmt.Errorf("Received %d response", status)
+	}
 }

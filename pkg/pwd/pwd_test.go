@@ -1,6 +1,9 @@
 package pwd
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func Test_Pwd(t *testing.T) {
 	pwds := [5]struct {
@@ -15,12 +18,15 @@ func Test_Pwd(t *testing.T) {
 		{"", true, CheckHash},
 	}
 
-	for _, pwd := range pwds {
-		_, err := pwd.fn(pwd.value)
+	for i, pwd := range pwds {
+		fmt.Printf("Running case %d\n", i+1)
 
+		_, err := pwd.fn(pwd.value)
 		if pwd.expectingErr {
 			if err == nil {
-				t.Error("Expected an error")
+				t.Errorf("Expecting an error in case %d\n", i+1)
+			} else {
+				fmt.Println(err)
 			}
 			continue
 		}
