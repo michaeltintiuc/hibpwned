@@ -41,18 +41,18 @@ func (a Account) BuildURL() string {
 }
 
 // FetchBreached account info
-func (a Account) FetchBreached() (*http.Response, error) {
+func (a Account) FetchBreached(url string) (*http.Response, error) {
 	if a.email == "" {
 		return nil, fmt.Errorf("Cannot fetch empty account breaches")
 	}
-	return breach.Get(a.BuildURL())
+	return breach.Get(url)
 }
 
 // Check if said account was breached
 func Check(email, domain string, truncated, unverified bool) ([]byte, error) {
 	a := NewAccount(email, domain, truncated, unverified)
 RETRY:
-	breached, err := a.FetchBreached()
+	breached, err := a.FetchBreached(a.BuildURL())
 	if err != nil {
 		return []byte{}, err
 	}
