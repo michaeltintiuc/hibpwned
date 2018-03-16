@@ -8,6 +8,5 @@ jobs:
     steps:
       - checkout
       - run: go get -v -t -d ./...
-      - run: go test -v ./pkg/pwd -race -coverprofile=coverage.txt -covermode=atomic
-      - run: go test -v ./pkg/breach/account -race -coverprofile=coverage.txt -covermode=atomic
+      - run: ./test.sh
       - run: bash <(curl -s https://codecov.io/bash)
