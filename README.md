@@ -3,7 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/michaeltintiuc/hibpwned)](https://goreportcard.com/report/github.com/michaeltintiuc/hibpwned)
 [![Build Status](https://travis-ci.org/michaeltintiuc/hibpwned.svg?branch=master)](https://travis-ci.org/michaeltintiuc/hibpwned)
 [![codecov](https://codecov.io/gh/michaeltintiuc/hibpwned/branch/master/graph/badge.svg)](https://codecov.io/gh/michaeltintiuc/hibpwned)
-[![CircleCI](https://circleci.com/gh/michaeltintiuc/hibpwned.svg?style=svg)](https://circleci.com/gh/michaeltintiuc/hibpwned)
+[![CircleCI](https://circleci.com/gh/michaeltintiuc/hibpwned.svg?style=shield)](https://circleci.com/gh/michaeltintiuc/hibpwned)
 
 Wrapper around the [HaveIBeenPwned.com API](https://haveibeenpwned.com/API/v2) written in Go
 
