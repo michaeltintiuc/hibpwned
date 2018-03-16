@@ -20,9 +20,9 @@ func Test_Check(t *testing.T) {
 		{Account{" ", d, false, false}, false, true},
 		{Account{e, "", false, false}, true, false},
 		{Account{e, d, false, false}, false, false},
-		{Account{e, d, true, true}, false, false},
+		{Account{e, d, true, true}, true, false},
 		{Account{"", d, false, false}, false, true},
-		{Account{"", "foo", false, false}, false, true},
+		{Account{"", "foo", false, false}, true, true},
 	}
 
 	for i, c := range cases {
@@ -43,7 +43,7 @@ func Test_Check(t *testing.T) {
 		}
 
 		if c.sleep {
-			time.Sleep(2 * time.Second)
+			time.Sleep(4 * time.Second)
 		}
 	}
 }
