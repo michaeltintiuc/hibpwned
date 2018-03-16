@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/michaeltintiuc/hibpwned/pkg/breach"
 )
@@ -50,17 +48,6 @@ func (a Account) FetchBreached() (*http.Response, error) {
 	return breach.Get(a.BuildURL())
 }
 
-// RetryRequest after a timeout response
-func (a Account) RetryRequest(header string) error {
-	delay, err := strconv.ParseFloat(header, 10)
-	if err != nil {
-		return err
-	}
-
-	time.Sleep(time.Duration(delay+1) * time.Second)
-	return nil
-}
-
 // Check if said account was breached
 func Check(email, domain string, truncated, unverified bool) ([]byte, error) {
 	a := NewAccount(email, domain, truncated, unverified)
@@ -70,7 +57,7 @@ RETRY:
 		return []byte{}, err
 	}
 
-	retry, err := breach.VerifyResponse(breached.StatusCode)
+	retry, err := breach.VerifyAndRetry(breached)
 	if err != nil {
 		return []byte{}, err
 	}
