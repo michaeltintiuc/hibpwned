@@ -51,19 +51,20 @@ func (a Account) FetchBreached() (*http.Response, error) {
 }
 
 // RetryRequest after a timeout response
-func (a Account) RetryRequest(header string) (*http.Response, error) {
+func (a Account) RetryRequest(header string) error {
 	delay, err := strconv.ParseFloat(header, 10)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	time.Sleep(time.Duration(delay+1) * time.Second)
-	return a.FetchBreached()
+	return nil
 }
 
 // Check if said account was breached
 func Check(email, domain string, truncated, unverified bool) ([]byte, error) {
 	a := NewAccount(email, domain, truncated, unverified)
+RETRY:
 	breached, err := a.FetchBreached()
 	if err != nil {
 		return []byte{}, err
@@ -74,7 +75,7 @@ func Check(email, domain string, truncated, unverified bool) ([]byte, error) {
 		return []byte{}, err
 	}
 	if retry {
-		breached, _ = a.RetryRequest(breached.Header.Get("Retry-After"))
+		goto RETRY
 	}
 
 	defer breached.Body.Close()

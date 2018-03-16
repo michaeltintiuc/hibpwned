@@ -77,7 +77,7 @@ func Test_FetchBreached(t *testing.T) {
 
 func Test_RetryRequest(t *testing.T) {
 	a := NewAccount(e, d, false, false)
-	_, err := a.RetryRequest("10E99999")
+	err := a.RetryRequest("10E99999")
 	if err == nil {
 		t.Error("Expecting an error")
 		return
