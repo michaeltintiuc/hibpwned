@@ -7,13 +7,11 @@ import (
 	"time"
 )
 
-// Breach is the interface that provides the shared Breach methods
-type Breach interface {
-	BuildURL() string
-}
-
 // BaseURL of all HIBPwned API endpoints
-var BaseURL = "https://haveibeenpwned.com/api/v2/"
+var (
+	MaxRetries = 3
+	BaseURL    = "https://haveibeenpwned.com/api/v2/"
+)
 
 // Get a HIBPwned API endpoint
 func Get(url string) (*http.Response, error) {

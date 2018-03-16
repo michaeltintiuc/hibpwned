@@ -11,6 +11,7 @@ import (
 
 // Account to verify for breaches
 type Account struct {
+	url        string
 	email      string
 	domain     string
 	truncated  bool
@@ -19,7 +20,9 @@ type Account struct {
 
 // NewAccount creates a new Account instance
 func NewAccount(email, domain string, truncated, unverified bool) *Account {
-	return &Account{email, domain, truncated, unverified}
+	a := &Account{"", email, domain, truncated, unverified}
+	a.url = a.BuildURL()
+	return a
 }
 
 // BuildURL to send request to
@@ -41,18 +44,18 @@ func (a Account) BuildURL() string {
 }
 
 // FetchBreached account info
-func (a Account) FetchBreached(url string) (*http.Response, error) {
+func (a Account) FetchBreached() (*http.Response, error) {
 	if a.email == "" {
 		return nil, fmt.Errorf("Cannot fetch empty account breaches")
 	}
-	return breach.Get(url)
+	return breach.Get(a.url)
 }
 
 // Check if said account was breached
-func Check(email, domain string, truncated, unverified bool) ([]byte, error) {
-	a := NewAccount(email, domain, truncated, unverified)
+func (a Account) Check() ([]byte, error) {
+	retries := 0
 RETRY:
-	breached, err := a.FetchBreached(a.BuildURL())
+	breached, err := a.FetchBreached()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -61,7 +64,8 @@ RETRY:
 	if err != nil {
 		return []byte{}, err
 	}
-	if retry {
+	if retry && retries < breach.MaxRetries {
+		retries++
 		goto RETRY
 	}
 

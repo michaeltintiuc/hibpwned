@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 )
 
 var (
@@ -15,22 +14,33 @@ var (
 )
 
 func Test_Check(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch p := r.URL.Query().Get("domain"); p {
+		case "retry":
+			w.Header().Set("Retry-After", "0")
+			w.WriteHeader(429)
+		case "fail":
+			w.WriteHeader(400)
+		}
+		fmt.Fprintln(w, "HIBPwned servers should be happy now")
+	}))
+	defer ts.Close()
+
 	cases := []struct {
 		Account
-		sleep        bool
 		expectingErr bool
 	}{
-		{Account{" ", d, false, false}, false, true},
-		{Account{e, "", false, false}, true, false},
-		{Account{e, d, false, false}, false, false},
-		{Account{e, d, true, true}, true, false},
-		{Account{"", d, false, false}, false, true},
-		{Account{"", "foo", false, false}, true, true},
+		{*NewAccount(e, "", false, false), false},
+		{*NewAccount(e, d, true, true), false},
+		{*NewAccount("", d, false, false), true},
+		{*NewAccount(e, "retry", false, false), false},
+		{*NewAccount(e, "fail", false, false), true},
 	}
 
 	for i, c := range cases {
 		fmt.Printf("Running case %d\n", i+1)
-		_, err := Check(c.email, c.domain, c.truncated, c.unverified)
+		c.url = ts.URL + "?domain=" + c.domain
+		_, err := c.Check()
 
 		if c.expectingErr == true {
 			if err == nil {
@@ -43,10 +53,6 @@ func Test_Check(t *testing.T) {
 
 		if err != nil {
 			t.Error(err)
-		}
-
-		if c.sleep {
-			time.Sleep(4 * time.Second)
 		}
 	}
 }
@@ -62,14 +68,15 @@ func Test_FetchBreached(t *testing.T) {
 		URL          string
 		expectingErr bool
 	}{
-		{Account{e, d, false, false}, ts.URL, false},
-		{Account{e, d, false, false}, ":", true},
-		{Account{"", "foo", false, false}, ts.URL, true},
+		{*NewAccount(e, d, false, false), ts.URL, false},
+		{*NewAccount(e, d, false, false), ":", true},
+		{*NewAccount("", "foo", false, false), ts.URL, true},
 	}
 
 	for i, c := range cases {
 		fmt.Printf("Running case %d\n", i+1)
-		res, err := c.FetchBreached(c.URL)
+		c.Account.url = c.URL
+		res, err := c.FetchBreached()
 
 		if c.expectingErr == true {
 			if err == nil {

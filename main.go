@@ -38,7 +38,8 @@ func checkAccount() {
 		return
 	}
 
-	data, err := account.Check(email, domain, truncated, unverified)
+	a := account.NewAccount(email, domain, truncated, unverified)
+	data, err := a.Check()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
