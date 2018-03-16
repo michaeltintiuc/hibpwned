@@ -90,18 +90,18 @@ func Test_VerifyAndRetry(t *testing.T) {
 }
 
 func Test_Get(t *testing.T) {
-	urlBak := url
+	baseURLBak := baseURL
 	cases := []struct {
 		url          string
 		expectingErr bool
 	}{
 		{":", true},
-		{urlBak, false},
+		{baseURLBak, false},
 	}
 
 	for i, c := range cases {
 		fmt.Printf("Running case %d\n", i+1)
-		url = c.url
+		baseURL = c.url
 		_, err := Get("")
 
 		if c.expectingErr == true {
@@ -116,5 +116,5 @@ func Test_Get(t *testing.T) {
 			t.Error(err)
 		}
 	}
-	url = urlBak
+	baseURL = baseURLBak
 }
