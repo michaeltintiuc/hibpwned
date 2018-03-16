@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.9
+
+    working_directory: /go/src/github.com/michaeltintiuc/hibpwned
+    steps:
+      - checkout
+      - run: go get -v -t -d ./...
+      - run: go test -v ./pkg/pwd
+      - run: go test -v ./pkg/breach/account
+
