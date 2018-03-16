@@ -12,13 +12,12 @@ type Breach interface {
 	BuildURL() string
 }
 
-var baseURL = "https://haveibeenpwned.com/api/v2/"
+// BaseURL of all HIBPwned API endpoints
+var BaseURL = "https://haveibeenpwned.com/api/v2/"
 
 // Get a HIBPwned API endpoint
-func Get(endpoint string) (*http.Response, error) {
+func Get(url string) (*http.Response, error) {
 	c := &http.Client{}
-	url := baseURL + endpoint
-
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err

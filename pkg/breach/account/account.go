@@ -24,7 +24,7 @@ func NewAccount(email, domain string, truncated, unverified bool) *Account {
 
 // BuildURL to send request to
 func (a Account) BuildURL() string {
-	url := "breachedaccount/" + a.email
+	url := breach.BaseURL + "breachedaccount/" + a.email
 	params := []string{}
 
 	if a.domain != "" {

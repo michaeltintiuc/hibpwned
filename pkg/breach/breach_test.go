@@ -2,7 +2,9 @@ package breach
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -90,19 +92,22 @@ func Test_VerifyAndRetry(t *testing.T) {
 }
 
 func Test_Get(t *testing.T) {
-	baseURLBak := baseURL
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "HIBPwned servers should be happy now")
+	}))
+	defer ts.Close()
+
 	cases := []struct {
-		url          string
+		URL          string
 		expectingErr bool
 	}{
 		{":", true},
-		{baseURLBak, false},
+		{ts.URL, false},
 	}
 
 	for i, c := range cases {
 		fmt.Printf("Running case %d\n", i+1)
-		baseURL = c.url
-		_, err := Get("")
+		res, err := Get(c.URL)
 
 		if c.expectingErr == true {
 			if err == nil {
@@ -115,6 +120,10 @@ func Test_Get(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+		_, err = ioutil.ReadAll(res.Body)
+		res.Body.Close()
+		if err != nil {
+			t.Error(err)
+		}
 	}
-	baseURL = baseURLBak
 }
