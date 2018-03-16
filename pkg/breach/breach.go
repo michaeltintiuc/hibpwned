@@ -7,10 +7,12 @@ import (
 	"time"
 )
 
-// BaseURL of all HIBPwned API endpoints
 var (
+	// MaxRetries for blocked requests
 	MaxRetries = 3
-	BaseURL    = "https://haveibeenpwned.com/api/v2/"
+
+	// BaseURL of all HIBPwned API endpoints
+	BaseURL = "https://haveibeenpwned.com/api/v2/"
 )
 
 // Get a HIBPwned API endpoint

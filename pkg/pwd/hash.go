@@ -12,14 +12,22 @@ import (
 
 // Hash represents a SHA-1 hash of a password
 type Hash struct {
+	url    string
 	Hashed string
 	Pwned  bool
 	Count  int
 }
 
+var (
+	// BaseURL of HIBPwned Password Range API endpoint
+	BaseURL = "https://api.pwnedpasswords.com/range/"
+)
+
 // NewHash creates a Hash instance
 func NewHash(hash string) *Hash {
-	return &Hash{hash, false, 0}
+	h := &Hash{"", hash, false, 0}
+	h.url = BaseURL
+	return h
 }
 
 // Search the SHA-1 hash in in the list of compromised passwords
@@ -77,6 +85,6 @@ func (p Hash) FetchPwned() (io.ReadCloser, error) {
 	if err := p.ValidateHash(); err != nil {
 		return nil, err
 	}
-	res, err := http.Get("https://api.pwnedpasswords.com/range/" + p.Hashed[:5])
+	res, err := http.Get(p.url + p.Hashed[:5])
 	return res.Body, err
 }
