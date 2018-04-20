@@ -18,6 +18,25 @@ type Account struct {
 	unverified bool
 }
 
+// JSON structure of breached account
+type JSON struct {
+	Title        string
+	Name         string
+	Domain       string
+	BreachDate   string
+	AddedDate    string
+	ModifiedDate string
+	Description  string
+	LogoType     string
+	DataClasses  []string
+	PwnCount     int
+	IsVerified   bool
+	IsFabricated bool
+	IsActive     bool
+	IsRetired    bool
+	IsSpamList   bool
+}
+
 // NewAccount creates a new Account instance
 func NewAccount(email, domain string, truncated, unverified bool) *Account {
 	a := &Account{"", email, domain, truncated, unverified}

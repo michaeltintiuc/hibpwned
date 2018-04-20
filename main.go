@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -50,7 +51,15 @@ func checkAccount() {
 		return
 	}
 
-	fmt.Println(string(data))
+	var accountJSON []account.JSON
+	err = json.Unmarshal(data, &accountJSON)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	// fmt.Println(string(data))
+	fmt.Printf("%+v", accountJSON)
 }
 
 func checkPassword() {
