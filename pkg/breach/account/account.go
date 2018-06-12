@@ -1,6 +1,7 @@
 package account
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -52,10 +53,10 @@ func (a Account) BuildURL() string {
 	if a.domain != "" {
 		params = append(params, "domain="+a.domain)
 	}
-	if a.truncated == true {
+	if a.truncated {
 		params = append(params, "truncateResponse=true")
 	}
-	if a.unverified == true {
+	if a.unverified {
 		params = append(params, "includeUnverified=true")
 	}
 
@@ -90,4 +91,11 @@ RETRY:
 
 	defer breached.Body.Close()
 	return ioutil.ReadAll(breached.Body)
+}
+
+// Format the details of an account breach
+func (a Account) Format(data []byte) ([]JSON, error) {
+	var accountJSON []JSON
+	err := json.Unmarshal(data, &accountJSON)
+	return accountJSON, err
 }

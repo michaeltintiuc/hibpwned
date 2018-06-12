@@ -27,7 +27,7 @@ func Get(url string) (*http.Response, error) {
 	return c.Do(req)
 }
 
-//VerifyAndRetry an API request
+// VerifyAndRetry an API request
 func VerifyAndRetry(res *http.Response) (bool, error) {
 	retry, err := VerifyResponse(res.StatusCode)
 	if err != nil {
@@ -44,7 +44,7 @@ func VerifyResponse(status int) (bool, error) {
 	switch status {
 	case 429:
 		return true, nil
-	case 200:
+	case 200, 404:
 		return false, nil
 	default:
 		return false, fmt.Errorf("Received %d response", status)
