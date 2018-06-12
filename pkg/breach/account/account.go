@@ -94,8 +94,11 @@ RETRY:
 }
 
 // Format the details of an account breach
-func (a Account) Format(data []byte) ([]JSON, error) {
+func (a Account) Format(breachData []byte) ([]JSON, error) {
 	var accountJSON []JSON
-	err := json.Unmarshal(data, &accountJSON)
+	if len(breachData) == 0 {
+		return accountJSON, fmt.Errorf("Cannot format empty string")
+	}
+	err := json.Unmarshal(breachData, &accountJSON)
 	return accountJSON, err
 }

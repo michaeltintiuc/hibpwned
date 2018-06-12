@@ -45,7 +45,7 @@ func checkAccount() {
 		os.Exit(1)
 	}
 
-	if data == nil {
+	if len(data) == 0 {
 		fmt.Printf("Account '%s' was not breached, yet...\n", email)
 		return
 	}
