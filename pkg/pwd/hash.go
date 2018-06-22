@@ -43,7 +43,9 @@ func (p *Hash) Search() error {
 
 	for scanner.Scan() {
 		if row := scanner.Text(); strings.Contains(row, hashPart) {
-			p.ScanRow(row)
+			if err = p.ScanRow(row); err != nil {
+				return err
+			}
 			break
 		}
 	}
