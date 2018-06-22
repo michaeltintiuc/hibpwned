@@ -21,7 +21,7 @@ func Test_Sleep(t *testing.T) {
 		fmt.Printf("Running case %d\n", i+1)
 		err := Sleep(c.seconds)
 
-		if c.expectingErr == true {
+		if c.expectingErr {
 			if err == nil {
 				t.Errorf("Expecting an error in case %d\n", i+1)
 			} else {
@@ -49,7 +49,7 @@ func Test_VerifyResponse(t *testing.T) {
 		fmt.Printf("Running case %d\n", i+1)
 		_, err := VerifyResponse(c.status)
 
-		if c.expectingErr == true {
+		if c.expectingErr {
 			if err == nil {
 				t.Errorf("Expecting an error in case %d\n", i+1)
 			} else {
@@ -77,7 +77,7 @@ func Test_VerifyAndRetry(t *testing.T) {
 		fmt.Printf("Running case %d\n", i+1)
 		_, err := VerifyAndRetry(&c.res)
 
-		if c.expectingErr == true {
+		if c.expectingErr {
 			if err == nil {
 				t.Errorf("Expecting an error in case %d\n", i+1)
 			} else {
@@ -109,7 +109,7 @@ func Test_Get(t *testing.T) {
 		fmt.Printf("Running case %d\n", i+1)
 		res, err := Get(c.URL)
 
-		if c.expectingErr == true {
+		if c.expectingErr {
 			if err == nil {
 				t.Errorf("Expecting an error in case %d\n", i+1)
 			} else {

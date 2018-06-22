@@ -42,7 +42,7 @@ func Test_Check(t *testing.T) {
 		c.url = ts.URL + "?domain=" + c.domain
 		_, err := c.Check()
 
-		if c.expectingErr == true {
+		if c.expectingErr {
 			if err == nil {
 				t.Errorf("Expecting an error in case %d\n", i+1)
 			} else {
@@ -78,7 +78,7 @@ func Test_FetchBreached(t *testing.T) {
 		c.Account.url = c.URL
 		res, err := c.FetchBreached()
 
-		if c.expectingErr == true {
+		if c.expectingErr {
 			if err == nil {
 				t.Errorf("Expecting an error in case %d\n", i+1)
 			} else {
