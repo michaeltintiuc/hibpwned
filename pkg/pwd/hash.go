@@ -87,6 +87,11 @@ func (p Hash) FetchPwned() (io.ReadCloser, error) {
 	if err := p.ValidateHash(); err != nil {
 		return nil, err
 	}
-	res, err := http.Get(p.url + p.Hashed[:5])
+	return Get(p.url + p.Hashed[:5])
+}
+
+// Get a HIBPwned API endpoint
+func Get(url string) (io.ReadCloser, error) {
+	res, err := http.Get(url)
 	return res.Body, err
 }
