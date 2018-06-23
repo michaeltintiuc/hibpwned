@@ -16,6 +16,7 @@ var (
 	domain     string
 	truncated  bool
 	unverified bool
+	formatJSON bool
 )
 
 func init() {
@@ -25,6 +26,7 @@ func init() {
 	flag.StringVar(&domain, "d", "", "Domain to check email against")
 	flag.BoolVar(&truncated, "t", false, "Display less detailed email breach info")
 	flag.BoolVar(&unverified, "u", false, "Include unverified email breaches")
+	flag.BoolVar(&formatJSON, "f", false, "Format JSON output")
 }
 
 func main() {
@@ -50,13 +52,27 @@ func checkAccount() {
 		return
 	}
 
+	if !formatJSON {
+		fmt.Println(string(data))
+		return
+	}
+
 	dataFormatted, err := a.Format(data)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
-	fmt.Println(dataFormatted)
+	for i, c := range dataFormatted {
+		if i > 0 {
+			fmt.Println("---------------------")
+		}
+
+		fmt.Println("Title:", c.Title)
+		fmt.Println("Domain:", c.Domain)
+		fmt.Println("Date:", c.BreachDate)
+		fmt.Println("Count:", c.PwnCount)
+	}
 }
 
 func checkPassword() {
