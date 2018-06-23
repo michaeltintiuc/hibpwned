@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
 set -e
+
+DIR="./pkg/..."
 echo "" > coverage.txt
 
-for d in $(go list ./... | grep -v vendor); do
+for d in $(go list $DIR | grep -v vendor); do
     go test -v -race -coverprofile=profile.out -covermode=atomic $d
     if [ -f profile.out ]; then
         cat profile.out >> coverage.txt
