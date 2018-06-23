@@ -12,11 +12,11 @@ import (
 
 // Account to verify for breaches
 type Account struct {
-	url        string
-	email      string
-	domain     string
-	truncated  bool
-	unverified bool
+	URL        string
+	Email      string
+	Domain     string
+	Truncated  bool
+	Unverified bool
 }
 
 // JSON structure of breached account
@@ -41,22 +41,22 @@ type JSON struct {
 // NewAccount creates a new Account instance
 func NewAccount(email, domain string, truncated, unverified bool) *Account {
 	a := &Account{"", email, domain, truncated, unverified}
-	a.url = a.BuildURL()
+	a.URL = a.BuildURL()
 	return a
 }
 
 // BuildURL to send request to
 func (a Account) BuildURL() string {
-	url := breach.BaseURL + "breachedaccount/" + a.email
+	url := breach.BaseURL + "breachedaccount/" + a.Email
 	params := []string{}
 
-	if a.domain != "" {
-		params = append(params, "domain="+a.domain)
+	if a.Domain != "" {
+		params = append(params, "domain="+a.Domain)
 	}
-	if a.truncated {
+	if a.Truncated {
 		params = append(params, "truncateResponse=true")
 	}
-	if a.unverified {
+	if a.Unverified {
 		params = append(params, "includeUnverified=true")
 	}
 
@@ -65,10 +65,10 @@ func (a Account) BuildURL() string {
 
 // FetchBreached account info
 func (a Account) FetchBreached() (*http.Response, error) {
-	if a.email == "" {
+	if a.Email == "" {
 		return nil, fmt.Errorf("Cannot fetch empty account breaches")
 	}
-	return breach.Get(a.url)
+	return breach.Get(a.URL)
 }
 
 // Check if said account was breached

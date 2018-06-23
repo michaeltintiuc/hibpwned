@@ -39,7 +39,7 @@ func Test_Check(t *testing.T) {
 
 	for i, c := range cases {
 		fmt.Printf("Running case %d\n", i+1)
-		c.url = ts.URL + "?domain=" + c.domain
+		c.URL = ts.URL + "?domain=" + c.Domain
 		_, err := c.Check()
 
 		if c.expectingErr {
@@ -75,7 +75,7 @@ func Test_FetchBreached(t *testing.T) {
 
 	for i, c := range cases {
 		fmt.Printf("Running case %d\n", i+1)
-		c.Account.url = c.URL
+		c.Account.URL = c.URL
 		res, err := c.FetchBreached()
 
 		if c.expectingErr {
