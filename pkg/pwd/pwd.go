@@ -6,22 +6,16 @@ import (
 	"strings"
 )
 
-// CheckPlain verifies if a plain-text password was compromised and how many times
-func CheckPlain(pass string) (*Hash, error) {
-	p := NewHash("")
-
-	if err := ValidatePlain(pass); err != nil {
-		return p, err
+// NewPlain creates a new Hash instance
+// from a plain-text password
+func NewPlain(pwd string) (*Hash, error) {
+	if err := ValidatePlain(pwd); err != nil {
+		return nil, err
 	}
 
-	p.Hashed = SHA1(pass)
-	return p, p.Search()
-}
+	p := &Hash{BaseURL, SHA1(pwd), false, 0}
 
-// CheckHash verifies if SHA-1 hash of a password was compromised and how many times
-func CheckHash(hash string) (*Hash, error) {
-	p := NewHash(hash)
-	return p, p.Search()
+	return p, nil
 }
 
 // ValidatePlain checks the provided plain-text password

@@ -24,10 +24,14 @@ var (
 )
 
 // NewHash creates a Hash instance
-func NewHash(hash string) *Hash {
-	h := &Hash{"", hash, false, 0}
-	h.url = BaseURL
-	return h
+func NewHash(hash string) (*Hash, error) {
+	p := &Hash{BaseURL, hash, false, 0}
+
+	if err := p.ValidateHash(); err != nil {
+		return nil, err
+	}
+
+	return p, nil
 }
 
 // Search the SHA-1 hash in in the list of compromised passwords
@@ -84,14 +88,11 @@ func (p *Hash) ValidateHash() error {
 // FetchPwned passwords from the HIBPwned API
 // using the first 5 characters of the SHA-1 hash
 func (p Hash) FetchPwned() (io.ReadCloser, error) {
-	if err := p.ValidateHash(); err != nil {
+	res, err := http.Get(p.url + p.Hashed[:5])
+
+	if res == nil {
 		return nil, err
 	}
-	return Get(p.url + p.Hashed[:5])
-}
 
-// Get a HIBPwned API endpoint
-func Get(url string) (io.ReadCloser, error) {
-	res, err := http.Get(url)
 	return res.Body, err
 }

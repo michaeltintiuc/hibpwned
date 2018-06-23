@@ -81,8 +81,8 @@ func checkPassword() {
 		value string
 		fn    func(value string) (*pwd.Hash, error)
 	}{
-		{"Checking plain-text password", pass, pwd.CheckPlain},
-		{"Checking SHA-1 password hash", hash, pwd.CheckHash},
+		{"Checking plain-text password", pass, pwd.NewPlain},
+		{"Checking SHA-1 password hash", hash, pwd.NewHash},
 	}
 
 	for _, c := range checks {
@@ -95,6 +95,11 @@ func checkPassword() {
 
 func validate(p *pwd.Hash, err error) {
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	if err = p.Search(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
