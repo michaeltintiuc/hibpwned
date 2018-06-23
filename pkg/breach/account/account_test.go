@@ -96,3 +96,32 @@ func Test_FetchBreached(t *testing.T) {
 		}
 	}
 }
+
+func Test_Format(t *testing.T) {
+	a := NewAccount(e, d, false, false)
+	cases := []struct {
+		data         []byte
+		expectingErr bool
+	}{
+		{[]byte(""), true},
+		{[]byte(`[{"Name":"Adobe"}]`), false},
+	}
+
+	for i, c := range cases {
+		fmt.Printf("Running case %d\n", i+1)
+		_, err := a.Format(c.data)
+
+		if c.expectingErr {
+			if err == nil {
+				t.Errorf("Expecting an error in case %d\n", i+1)
+			} else {
+				fmt.Println(err)
+			}
+			continue
+		}
+
+		if err != nil {
+			t.Error(err)
+		}
+	}
+}
