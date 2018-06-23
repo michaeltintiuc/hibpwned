@@ -51,13 +51,33 @@ Your password was pwned 3599486 times
 
 ### Account breaches
 
-> work in progress, dumping out JSON is not very user-friendly, is it?
-
 Passing an email address:
 
 ```
 >hibpwned -e test@example.com
+
 [{"Title":"000webhost","Name":"000webhost","Domain":"000webhost.com","BreachDate":"2015-03-01","AddedDate":"2015-10-26T23:35:45Z","ModifiedDate":"2017-12-10T21:44:27Z","PwnCount":14936670,"Description":"In approximately March 2015, the free web hosting provider <a href=\"http://www.troyhunt.com/2015/10/breaches-traders-plain-text-passwords.html\" target=\"_blank\" rel=\"noopener\">000webhost suffered a major data breach</a> that exposed almost 15 million customer records. The data was sold and traded before 000webhost was alerted in October. The breach included names, email addresses and plain text passwords.","DataClasses":["Email addresses","IP addresses","Names","Passwords"],"IsVerified":true,"IsFabricated":false,"IsSensitive":false,"IsActive":true,"IsRetired":false,"IsSpamList":false,"LogoType":"png"}, ...]
+```
+
+Formatting raw JSON output with `-f` flag
+
+```
+>hibpwned -e test@example.com -f
+
+Title: 000webhost
+Domain: 000webhost.com
+Date: 2015-03-01
+Count: 14936670
+---------------------
+Title: 8tracks
+Domain: 8tracks.com
+Date: 2017-06-27
+Count: 7990619
+---------------------
+Title: Adobe
+Domain: adobe.com
+Date: 2013-10-04
+Count: 152445165
 ```
 
 Passing additional parameters:

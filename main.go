@@ -22,7 +22,7 @@ var (
 func init() {
 	flag.StringVar(&pass, "p", "", "Password to check")
 	flag.StringVar(&hash, "h", "", "SHA-1 hash to check")
-	flag.StringVar(&email, "e", "", "Email to check")
+	flag.StringVar(&email, "e", "", "Email or username to check")
 	flag.StringVar(&domain, "d", "", "Domain to check email against")
 	flag.BoolVar(&truncated, "t", false, "Display less detailed email breach info")
 	flag.BoolVar(&unverified, "u", false, "Include unverified email breaches")
