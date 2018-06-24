@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/michaeltintiuc/hibpwned/pkg/util"
 )
 
 // Hash represents a SHA-1 hash of a password
@@ -40,7 +42,8 @@ func (p *Hash) Search() error {
 	if err != nil {
 		return err
 	}
-	defer pwned.Close()
+
+	defer util.LogErr(pwned.Close)
 
 	scanner := bufio.NewScanner(pwned)
 	hashPart := p.Hashed[5:]

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/michaeltintiuc/hibpwned/pkg/breach"
+	"github.com/michaeltintiuc/hibpwned/pkg/util"
 )
 
 // Account to verify for breaches
@@ -89,7 +90,7 @@ RETRY:
 		goto RETRY
 	}
 
-	defer breached.Body.Close()
+	defer util.LogErr(breached.Body.Close)
 	return ioutil.ReadAll(breached.Body)
 }
 
